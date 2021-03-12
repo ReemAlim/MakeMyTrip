@@ -24,13 +24,13 @@ public class PassengerInfoDataProvider {
             passengerInfoClass = new PassengerInfoClass();
             passengerBookingInfoClass = new PassengerBookingInfoClass();
             JsonObject passengerBookingObject = passengerInfoList.get(i).get("passengerBookingInfo").getAsJsonObject();
-            passengerInfoClass.setFirstName(passengerInfoList.get(i).get("firstName").toString());
-            passengerInfoClass.setLastName(passengerInfoList.get(i).get("lastName").toString());
+            passengerInfoClass.setFirstName(passengerInfoList.get(i).get("firstName").getAsString());
+            passengerInfoClass.setLastName(passengerInfoList.get(i).get("lastName").getAsString());
             passengerInfoClass.setAge(passengerInfoList.get(i).get("age").getAsInt());
-            passengerInfoClass.setPhoneNumber(passengerInfoList.get(i).get("phoneNumber").toString());
+            passengerInfoClass.setPhoneNumber(passengerInfoList.get(i).get("phoneNumber").getAsString());
             passengerBookingInfoClass.setCityName(passengerBookingObject.get("cityName").getAsString());
-            passengerBookingInfoClass.setCheckIn(passengerBookingObject.get("checkInDate").toString());
-            passengerBookingInfoClass.setCheckOut(passengerBookingObject.get("checkOutDate").toString());
+            passengerBookingInfoClass.setCheckIn(passengerBookingObject.get("checkInDate").getAsString());
+            passengerBookingInfoClass.setCheckOut(passengerBookingObject.get("checkOutDate").getAsString());
             passengerBookingInfoClass.setAdultsCount(passengerBookingObject.get("numberOfAdults").getAsInt());
             passengerBookingInfoClass.setChildrenCount(passengerBookingObject.get("numberOfChildren").getAsInt());
             passengerBookingInfoClass.setNumberOfRooms(passengerBookingObject.get("numberOfRooms").getAsInt());

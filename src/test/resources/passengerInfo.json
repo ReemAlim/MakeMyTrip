@@ -6,17 +6,16 @@
     "age": 36,
     "passengerBookingInfo": {
       "cityName": "Dubai, United Arab Emirates",
-      "checkInDate": "06/03/2021",
-      "checkOutDate": "09/03/2021",
-      "numberOfAdults": 5,
-      "numberOfChildren": 4,
-      "numberOfRooms": 6,
+      "checkInDate": "30/03/2021",
+      "checkOutDate": "01/04/2021",
+      "numberOfAdults": 4,
+      "numberOfChildren": 3,
+      "numberOfRooms": 1,
       "travellingFor": "Leisure",
       "childrenAge": {
         "childAge_1": 4,
         "childAge_2": 6,
-        "childAge_3": 9,
-        "childAge_4": 10
+        "childAge_3": 9
       }
     }
   }

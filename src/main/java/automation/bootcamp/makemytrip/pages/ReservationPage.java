@@ -1,23 +1,18 @@
 package automation.bootcamp.makemytrip.pages;
 
 import automation.bootcamp.makemytrip.utilities.CommonUtilities;
+import automation.bootcamp.makemytrip.utilities.helperClasses.CalendarClass;
 import com.google.gson.JsonObject;
 import org.openqa.selenium.By;
 
 import java.util.ArrayList;
 
+
 public class ReservationPage extends BasePage {
 
-    // Reservation locators
-    //This one should be moved from here in a login page
-//    By loginCard_div_xpath = By.xpath("//div[contains(@class,'login__card')]");
-//    By loginPopup_button_id = By.id("username");
-//    By email_input_id = By.id("username");
-//    By continue_button_xpath = By.xpath("//button[@data-cy='continueBtn']");
-//    By password_input_id = By.xpath("//form//input[@id='password']");
-//    By login_button_xpath = By.xpath("//button[@data-cy='login']");
-
-    //Locators for filling the city field
+    /***
+     * Locators for the city field to select the city from the dropdown
+     */
     By hotel_a_xpath = By.xpath("//a[contains(@class,'hrtlCenter')][contains(@href,'hotels')]");
     By login_li_xpath = By.xpath("//li[contains(@class,'lhUser')]");
     By city_input_id = By.id("city");
@@ -26,21 +21,29 @@ public class ReservationPage extends BasePage {
     By city_li_options_xpath = By.xpath("//ul[@role='listbox']//li");
     By city_p_xpath = By.xpath("//p[contains(@class,'locusLabel')]");
 
-    //Locators to fill checkin/out fields
-    By datePickerContainer_div_className = By.className("datePickerContainer");
-    By checkin_input_id = By.id("checkin");
-    By checkout_input_id = By.id("checkout");
-
-    By travelFor_div_xpath = By.xpath("//div[contains(@class,'travelFor')]");
-
-
+    /***
+     * Locators to fill the Guests field
+     */
     By guest_div_xpath = By.xpath("//div[contains(@class,'roomGuests')]");
-    //    By adultCount_ul_cssSelector = By.cssSelector("ul[class*='guestCounter'][data-cy='adultCount']");
-//    By childrenCount_ul_xpath = By.xpath("//p[@data-cy='childrenRange']/following-sibling::ul[contains(@class,'guestCounter')]");
-//    By childAgeList_ul_cssSelector = By.cssSelector("ul[class*='childAgeList']");
     By guestApply_button_xpath = By.xpath("//button[contains(@class,'btnApply') and @data-cy='submitGuest']");
-    //    By travelForPopup_ul_class = By.className("travelForPopup");
+
+    /***
+     * Locators for the Travel For and Search button
+     */
+    By travelFor_div_xpath = By.xpath("//div[contains(@class,'travelFor')]");
     By search_button_id = By.id("hsw_search_button");
+
+    /***
+     * Locators for the checkIn/checkOut fields to fill them
+     */
+    By currentSelectedDay = By.xpath("//div[@class='DayPicker-Week']//div[@aria-selected='true' and contains(@class,'DayPicker-Day--today')]");
+    By datePickerCaptionList_div_xpath = By.xpath("//div[@class='DayPicker-Month']//div[@class='DayPicker-Caption']/div");
+    By monthYearButtonNext_span_xpath = By.xpath("//div[@class='DayPicker-wrapper']//span[contains(@class,'DayPicker-NavButton--next')]");
+
+    /***
+     * Initializing a calendar class instance
+     */
+    CalendarClass calendarClass;
 
     public ReservationPage() {
         super();
@@ -55,26 +58,40 @@ public class ReservationPage extends BasePage {
         clickOnButton(hotel_a_xpath);
     }
 
+    /***
+     * Method to fill the city name field with the name got from the PassengerInfo JSON file
+     * @param cityName, The city name text which will be typed in the field
+     */
     public void fillCityName(String cityName) {
         clickOnButton(city_input_id);
         fillTextField(city_input_xpath, cityName);
     }
 
+    /***
+     * Method to select the city name from the dropdown displayed; Which should
+     * be equal to the city name entered by the user (which we got from the PassengerInfo JSON file)
+     * @param text, The city name which we got from the PassengerInfo JSON file
+     */
     public void clickCityOption(String text) {
         getLiDropdownOption(city_ul_xpath, city_li_options_xpath, city_p_xpath, text);
     }
 
-    public void checkDatePickerDisplayed() {
-        if (checkWebElementIsDisplayed(datePickerContainer_div_className)) {
-            System.out.println("Displayed");
-        }
-
-    }
-
+    /***
+     * Method to click on the Rooms&Guests area
+     */
     public void clickGuestRoomChildren() {
         clickOnButton(guest_div_xpath);
     }
 
+    /***
+     * Method to check if number of adults and children is greater than 9 throw an exception otherwise proceed;
+     * This methid will be used within the class that is why it is defined as private
+     * @param numberOdAdults, number of adults from the PassengerInfo JSON file
+     * @param numberOfChildren, number of children from the PassengerInfo JSON file
+     * @return This method returns true if the number of adults+children less than or equal 9 otherwise throw an
+     * exception
+     */
+    /*Reem: Handle the exception that when the returned value greater than 9*/
     private boolean checkNumberOfAdultsChildren(int numberOdAdults, int numberOfChildren) {
         if (numberOdAdults + numberOfChildren <= 9) {
             return true;
@@ -82,6 +99,11 @@ public class ReservationPage extends BasePage {
         return false;
     }
 
+    /***
+     * Method to click on number of adults based on the number from the PassengerInfo JSON file
+     * @param numberOfAdults, Number of adults returned from the PassengerInfo JSON file
+     * @param numberOfChildren, Number of children returned from the PassengerInfo JSON file
+     */
     public void setNumberOfAdults(int numberOfAdults, int numberOfChildren) {
         By adult_Li_xpath = By.cssSelector("li[data-cy='adults-" + numberOfAdults + "']");
         if (checkNumberOfAdultsChildren(numberOfAdults, numberOfChildren)) {
@@ -89,17 +111,26 @@ public class ReservationPage extends BasePage {
                 clickOnButton(adult_Li_xpath);
             }
         }
-
     }
 
+    /***
+     * Method to click on number of children based on the number from the PassengerInfo JSON file
+     * @param numberOfAdults, Number of adults returned from the PassengerInfo JSON file
+     * @param numberOfChildren, Number of children returned from the PassengerInfo JSON file
+     */
     public void setNumberOfChildren(int numberOfAdults, int numberOfChildren) {
         By children_Li_xpath = By.cssSelector("li[data-cy='children-" + numberOfChildren + "']");
         if (checkNumberOfAdultsChildren(numberOfAdults, numberOfChildren)) {
             clickOnButton(children_Li_xpath);
         }
-
     }
 
+    /***
+     * Method to get the children age as a list from the PAssengerInfo JSON file;
+     * This method will be used within the class that is why it is defined as private
+     * @param childrenAgeObject, Children JsonObject returned from the PassengerInfo JSON file
+     * @return Returns list of integer of children age
+     */
     private ArrayList getChildrenAge(JsonObject childrenAgeObject) {
         ArrayList childrenAgeList = new ArrayList();
         if (childrenAgeObject != null) {
@@ -111,6 +142,10 @@ public class ReservationPage extends BasePage {
         return childrenAgeList;
     }
 
+    /***
+     * Method to loop over the children age list to fill the fields on the UI with the number in the list
+     * @param childrenAgeObject The array list that hols the children age
+     */
     public void fillChildrenAgeDropdown(JsonObject childrenAgeObject) {
         ArrayList childrenAgeAsList = getChildrenAge(childrenAgeObject);
         if (!childrenAgeAsList.isEmpty()) {
@@ -119,23 +154,57 @@ public class ReservationPage extends BasePage {
                 getSelectWebElement(children_age_select_cssSelector, String.valueOf(childrenAgeAsList.get(childAge)));
             }
         }
-
     }
 
+    /***
+     * Method to click on "Apply" button for the Room&Guests area to apply the entered values
+     */
     public void clickApplyGuests() {
         clickOnButton(guestApply_button_xpath);
     }
 
+    /***
+     * Method to click on the "Travel For" area
+     */
     public void clickTravelOption() {
         clickOnButton(travelFor_div_xpath);
     }
 
+    /***
+     * Method to select the travel for option returned from PassengerInfo JSON file
+     * @param travelPurpose Travel purpose text returned from the PAssengerInfo JSON file
+     */
     public void clickTravelFor(String travelPurpose) {
         if (travelPurpose != null) {
             String travelPurposeString = CommonUtilities.capitalizeFirstLetter(travelPurpose);
             By travelPurpose_li_xpath = By.xpath("//li[@data-cy='travelFor-" + travelPurposeString + "']");
             clickOnButton(travelPurpose_li_xpath);
         }
+    }
+
+    /***
+     * Method to select the check in date
+     * @param date The date returned from the PassengerInfo JSON file
+     */
+    public void selectCheckInDate(String date){
+        calendarClass  = new CalendarClass(this.driver,currentSelectedDay,datePickerCaptionList_div_xpath,monthYearButtonNext_span_xpath);
+        calendarClass.selectDateFromCalendar(date,0);
+    }
+
+    /***
+     * Method to select the check out date
+     * @param date The date returned from the PassengerInfo JSON file
+     */
+    public void selectCheckOutDate(String date){
+        calendarClass.selectDateFromCalendar(date,1);
+
+    }
+
+    /***
+     * Method to click on the Search button after entering all the data to get the search result page
+     */
+    public void clickSearch(){
+        clickOnButton(search_button_id);
     }
 
     public void quit() {

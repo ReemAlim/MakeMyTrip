@@ -19,4 +19,13 @@ public class CommonUtilities {
         String output = stringToCapitalize.substring(0, 1).toUpperCase() + stringToCapitalize.substring(1);
         return output;
     }
+
+    public static String[] splitString(String stringToSplit,String charToSplitAt){
+        String[] stringParts = stringToSplit.split(charToSplitAt);
+        if(stringParts!=null){
+           return stringParts;
+        }
+        return null;
+
+    }
 }

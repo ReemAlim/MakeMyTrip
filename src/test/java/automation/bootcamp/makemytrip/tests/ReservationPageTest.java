@@ -15,15 +15,11 @@ public class ReservationPageTest {
     }
     @Test(dataProvider = "PassengerInfoDataProvider",dataProviderClass = PassengerInfoDataProvider.class)
     public void fillReservationInfo(PassengerInfoClass passengerInfoClass){
-
-
-        System.out.println(passengerInfoClass);
-
         reservationPage.getHotelCard();
         reservationPage.fillCityName(passengerInfoClass.getPassengerBookingInfoClass().getCityName());
         reservationPage.clickCityOption(passengerInfoClass.getPassengerBookingInfoClass().getCityName());
-//        reservationPage.checkDatePickerDisplayed();
-//        reservationPage.getChildrenAge(passengerInfoClass.getPassengerBookingInfoClass().getChildrenAge());
+        reservationPage.selectCheckInDate(passengerInfoClass.getPassengerBookingInfoClass().getCheckIn());
+        reservationPage.selectCheckOutDate(passengerInfoClass.getPassengerBookingInfoClass().getCheckOut());
         reservationPage.clickGuestRoomChildren();
         reservationPage.setNumberOfAdults(passengerInfoClass.getPassengerBookingInfoClass().getAdultsCount(),passengerInfoClass.getPassengerBookingInfoClass().getChildrenCount());
         reservationPage.setNumberOfChildren(passengerInfoClass.getPassengerBookingInfoClass().getAdultsCount(),passengerInfoClass.getPassengerBookingInfoClass().getChildrenCount());
@@ -31,10 +27,11 @@ public class ReservationPageTest {
         reservationPage.clickApplyGuests();
         reservationPage.clickTravelOption();
         reservationPage.clickTravelFor(passengerInfoClass.getPassengerBookingInfoClass().getTravellingPurpose());
+        reservationPage.clickSearch();
     }
 
-    @AfterTest
-    public void quitBrowser(){
-        reservationPage.quit();
-    }
+//    @AfterTest
+//    public void quitBrowser(){
+//        reservationPage.quit();
+//    }
 }
