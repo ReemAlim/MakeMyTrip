@@ -20,6 +20,9 @@ public class ReservationPageTest {
 
     @Test(dataProvider = "PassengerInfoDataProvider", dataProviderClass = PassengerInfoDataProvider.class)
     public void assertOnSearchListingPageAfterFillingReservationInfo(PassengerInfoClass passengerInfoClass) {
+
+
+        reservationPage.chooseIndianFromCountryList();
         reservationPage.getHotelCard();
         reservationPage.fillCityName(passengerInfoClass.getPassengerBookingInfoClass().getCityName());
         reservationPage.clickCityOption(passengerInfoClass.getPassengerBookingInfoClass().getCityName());

@@ -125,6 +125,17 @@ public class BasePage {
         }
     }
 
+    protected void getOptionFromDropDown(By optionsLocator, String text) {
+
+        List<WebElement> liOptions = waitForALLWebElementToBeVisible(driver.findElements(optionsLocator));
+        for (WebElement op : liOptions) {
+            if(op.getText().equalsIgnoreCase(text)){
+                op.click();
+                break;
+            }
+        }
+    }
+
     /***
      * Check if a webElement is displayed on the page or not using locator
      * @param locator, This is the locator used to check if the element is displayed or not

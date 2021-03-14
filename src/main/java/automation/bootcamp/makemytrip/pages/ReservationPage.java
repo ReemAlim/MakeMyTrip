@@ -4,6 +4,7 @@ import automation.bootcamp.makemytrip.utilities.CommonUtilities;
 import automation.bootcamp.makemytrip.utilities.helperClasses.CalendarClass;
 import com.google.gson.JsonObject;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
 
 import java.util.ArrayList;
 
@@ -15,6 +16,9 @@ public class ReservationPage extends BasePage {
      */
     By hotel_a_xpath = By.xpath("//a[contains(@class,'hrtlCenter')][contains(@href,'hotels')]");
     By login_li_xpath = By.xpath("//li[contains(@class,'lhUser')]");
+    By country_span_arrow_xpath = By.xpath("//span[contains(@class,'whiteDownArrow')]");
+    By country_list_sapan_xpath = By.xpath("//span[@class='countryName']");
+
     By city_input_id = By.id("city");
     By city_input_xpath = By.xpath("//input[@aria-autocomplete='list']");
     By city_ul_xpath = By.xpath("//ul[@role='listbox']");
@@ -40,6 +44,7 @@ public class ReservationPage extends BasePage {
     By datePickerCaptionList_div_xpath = By.xpath("//div[@class='DayPicker-Month']//div[@class='DayPicker-Caption']/div");
     By monthYearButtonNext_span_xpath = By.xpath("//div[@class='DayPicker-wrapper']//span[contains(@class,'DayPicker-NavButton--next')]");
 
+
     /***
      * Initializing a calendar class instance
      */
@@ -55,10 +60,17 @@ public class ReservationPage extends BasePage {
     }
 
     public void getHotelCard() {
-        clickOnButton(login_li_xpath);
         clickOnButton(hotel_a_xpath);
     }
+    public void chooseIndianFromCountryList(){
+        clickOnButton(login_li_xpath);
+//        WebElement countyElement = getWebElement(country_div_xpath);
+//        countyElement.click();
+        clickOnButton(country_span_arrow_xpath);
+        getOptionFromDropDown(country_list_sapan_xpath,"India");
 
+    }
+    /*********************** All of the above should be moved somewhere!! **************************/
     /***
      * Method to fill the city name field with the name got from the PassengerInfo JSON file
      * @param cityName, The city name text which will be typed in the field
