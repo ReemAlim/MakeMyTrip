@@ -109,7 +109,7 @@ public class BasePage {
         List<WebElement> liOptions = waitForALLWebElementToBeVisible(ulElement.findElements(liLocator));
         for (WebElement op : liOptions) {
             try {
-                WebElement webElement = op.findElement(pLocator);
+                WebElement webElement = waitForWebElementToBeVisible(op.findElement(pLocator));
                 if (waitForWebElementToBeVisible(webElement).getText().equalsIgnoreCase(text)) {
                     try {
                         waitForWebElementToBeVisible(webElement).click();
@@ -160,8 +160,25 @@ public class BasePage {
         return driver.getWindowHandles();
     }
 
+    /***
+     * Method to get the title of the current page
+     * @return String of the title for this page
+     */
     protected String getWindowTitle(){
         return driver.getTitle();
+    }
+
+    protected String getPageUrl(){
+        return driver.getCurrentUrl();
+    }
+    /***
+     * Method to get the text for an input
+     * @param locator, webElement locator to gets its inner text
+     * @return
+     */
+    protected String getTextForValueAttribute(By locator){
+        return waitForWebElementToBeVisible(driver.findElement(locator)).getAttribute("value");
+
     }
 
     protected void quitBrowser(){

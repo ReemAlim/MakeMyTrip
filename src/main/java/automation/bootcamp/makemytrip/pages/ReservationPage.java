@@ -44,6 +44,7 @@ public class ReservationPage extends BasePage {
      * Initializing a calendar class instance
      */
     CalendarClass calendarClass;
+    SearchListingPage searchListingPage;
 
     public ReservationPage() {
         super();
@@ -214,6 +215,13 @@ public class ReservationPage extends BasePage {
     public String getNextPageTitle(){
         return getWindowTitle();
     }
+
+    public SearchListingPage getSearchListingPageObject(){
+        searchListingPage = new SearchListingPage(this.driver);
+//        System.out.println(getPageUrl());
+        return searchListingPage;
+    }
+
     public void quit() {
         quitBrowser();
     }

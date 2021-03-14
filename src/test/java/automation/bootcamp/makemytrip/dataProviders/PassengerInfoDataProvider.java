@@ -2,7 +2,7 @@ package automation.bootcamp.makemytrip.dataProviders;
 
 import automation.bootcamp.makemytrip.boClasses.PassengerBookingInfoClass;
 import automation.bootcamp.makemytrip.boClasses.PassengerInfoClass;
-import automation.bootcamp.makemytrip.dataReaders.JsonReader;
+import automation.bootcamp.makemytrip.dataReaders.*;
 import com.google.gson.JsonObject;
 import org.testng.annotations.DataProvider;
 
