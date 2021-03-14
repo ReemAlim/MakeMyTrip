@@ -126,14 +126,14 @@ public class CalendarClass extends BasePage{
 //        String monthInJson = getDayMonthYearFromJson(date)[1];
         String monthInJsonString = CalendarClass.getEquivalentMonth(Integer.valueOf(getDayMonthYearFromJson(date)[1]));
         String yearInJson = getDayMonthYearFromJson(date)[2];
-        System.out.println(monthInJsonString);
-        System.out.println(yearInJson);
+//        System.out.println(monthInJsonString);
+//        System.out.println(yearInJson);
 
         if (getDateCaptionFromCalendar().size()!=0) {
-            System.out.println(getDateCaptionFromCalendar().get(dateCaptionIndex).substring(getDateCaptionFromCalendar().get(0).length() - 4));
+//            System.out.println(getDateCaptionFromCalendar().get(dateCaptionIndex).substring(getDateCaptionFromCalendar().get(0).length() - 4));
 //            checkInYear = getMonthYearFromCalendar().get(0).substring(getMonthYearFromCalendar().get(0).length() - 4);
             checkInMonth = getDateCaptionFromCalendar().get(dateCaptionIndex).substring(0, getDateCaptionFromCalendar().get(0).length() - 4);
-            System.out.println(checkInMonth);
+//            System.out.println(checkInMonth);
             while(flag){
                 if(!monthInJsonString.equalsIgnoreCase(checkInMonth)){
                     clickOnButton(monthYearNextButtonLocator);

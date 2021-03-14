@@ -3,6 +3,7 @@ package automation.bootcamp.makemytrip.tests;
 import automation.bootcamp.makemytrip.boClasses.PassengerInfoClass;
 import automation.bootcamp.makemytrip.dataProviders.PassengerInfoDataProvider;
 import automation.bootcamp.makemytrip.pages.ReservationPage;
+import org.testng.Assert;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
@@ -28,10 +29,11 @@ public class ReservationPageTest {
         reservationPage.clickTravelOption();
         reservationPage.clickTravelFor(passengerInfoClass.getPassengerBookingInfoClass().getTravellingPurpose());
         reservationPage.clickSearch();
+        Assert.assertTrue(reservationPage.getNextPageTitle().contentEquals("MakeMyTrip"));
     }
 
-//    @AfterTest
-//    public void quitBrowser(){
-//        reservationPage.quit();
-//    }
+    @AfterTest
+    public void quitBrowser(){
+        reservationPage.quit();
+    }
 }

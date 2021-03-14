@@ -207,6 +207,13 @@ public class ReservationPage extends BasePage {
         clickOnButton(search_button_id);
     }
 
+    /***
+     * Method to get the title od the "Search Result" page loaded after clicking "Search"
+     * @return it returns the title for the page
+     */
+    public String getNextPageTitle(){
+        return getWindowTitle();
+    }
     public void quit() {
         quitBrowser();
     }
