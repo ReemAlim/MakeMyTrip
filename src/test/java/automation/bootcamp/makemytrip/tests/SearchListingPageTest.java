@@ -18,12 +18,11 @@ public class SearchListingPageTest {
     public void assertOnSearchCriteria(SearchFilterClass searchFilterClass){
         System.out.println(searchFilterClass);
         searchListingPage.launchBrowser(searchFilterClass.getSearchListingUrl());
-////        searchListingPage = reservationPage.getSearchListingPageObject();
         searchListingPage.moverPriceRate(searchFilterClass.getxOffset());
-//        searchListingPage.clickOnCheckboxUserRating();
+        searchListingPage.clickOnCheckboxUserRating();
         Assert.assertTrue(searchListingPage.getAppliedFilter());
-        Assert.assertEquals(searchListingPage.getPriceRangeText(searchFilterClass.getPriceRange()),"1500");
-//        Assert.assertEquals(searchListingPage.getUserRatingText(searchFilterClass.getUserRating()),("4 & above (Very Good)"));
+        Assert.assertEquals(searchListingPage.getPriceRangeText(searchFilterClass.getPriceRange()),"2000");
+        Assert.assertEquals(searchListingPage.getUserRatingText(searchFilterClass.getUserRating()),("4 & above (Very Good)"));
 
 
     }
