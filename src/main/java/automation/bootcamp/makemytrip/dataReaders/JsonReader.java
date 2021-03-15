@@ -18,7 +18,6 @@ public class JsonReader {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-
         JsonElement element = JsonParser.parseReader(reader);
 
         JsonArray array = element.getAsJsonArray();
@@ -29,7 +28,6 @@ public class JsonReader {
 
             objectList.add(jsonObject);
         }
-
 
         return objectList;
     }

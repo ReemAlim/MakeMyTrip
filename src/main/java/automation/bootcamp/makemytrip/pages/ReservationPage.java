@@ -1,10 +1,13 @@
 package automation.bootcamp.makemytrip.pages;
 
+import automation.bootcamp.makemytrip.file.dataWriters.JsonWriter;
 import automation.bootcamp.makemytrip.utilities.CommonUtilities;
 import automation.bootcamp.makemytrip.utilities.helperClasses.CalendarClass;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.json.Json;
 
 import java.util.ArrayList;
 
@@ -53,10 +56,6 @@ public class ReservationPage extends BasePage {
 
     public ReservationPage() {
         super();
-    }
-
-    public void launchBrowser() {
-        getURL();
     }
 
     public void getHotelCard() {
@@ -229,10 +228,20 @@ public class ReservationPage extends BasePage {
     }
 
     public SearchListingPage getSearchListingPageObject(){
+//        JsonObject jsonObject = new JsonObject();
+//        JsonElement jsonElement;
+//        jsonObject.toString();
+
         searchListingPage = new SearchListingPage(this.driver);
-//        System.out.println(getPageUrl());
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("searchListPageURL",getPageUrl());
+        System.out.println(getPageUrl());
+        System.out.println(jsonObject);
+//        System.out.println("=====");
+        JsonWriter.writeInJsonFile(jsonObject);
         return searchListingPage;
     }
+
 
     public void quit() {
         quitBrowser();

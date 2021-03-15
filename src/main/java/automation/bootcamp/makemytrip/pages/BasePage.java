@@ -3,6 +3,7 @@ package automation.bootcamp.makemytrip.pages;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.interactions.Action;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
@@ -22,13 +23,16 @@ public class BasePage {
         this.driver = driver;
     }
 
+    public void launchBrowser(String url) {
+        getURL(url);
+    }
     /**
      * Initiate a browser and navigate to the given URL; This should be moved to the loginPage
      */
-    protected void getURL() {
+    protected void getURL(String url) {
         WebDriverManager.chromedriver().setup();
         this.driver = new ChromeDriver();
-        driver.navigate().to("https://www.makemytrip.com");
+        driver.navigate().to(url);
         driver.manage().window().maximize();
     }
 
@@ -81,9 +85,14 @@ public class BasePage {
      * @param webElement, wait for this web element to be visible
      * @return returns a webElement to perform an action on
      */
-    private WebElement waitForWebElementToBeVisible(WebElement webElement) {
+    protected WebElement waitForWebElementToBeVisible(WebElement webElement) {
         webDriverWait = new WebDriverWait(driver, 20, 500);
         return webDriverWait.until(ExpectedConditions.visibilityOf(webElement));
+    }
+
+    protected WebElement waitForWebElementToBeClicked(WebElement webElement) {
+        webDriverWait = new WebDriverWait(driver, 20, 500);
+        return webDriverWait.until(ExpectedConditions.elementToBeClickable(webElement));
     }
 
     /***
@@ -136,6 +145,12 @@ public class BasePage {
         }
     }
 
+    public void moveSliderToEnd(WebElement slider,int xOffset) {
+        slider.click();
+        Actions moveSlider = new Actions(driver);
+        Action action = moveSlider.dragAndDropBy(slider, xOffset, 0).build();
+        action.perform();
+    }
     /***
      * Check if a webElement is displayed on the page or not using locator
      * @param locator, This is the locator used to check if the element is displayed or not
@@ -161,10 +176,10 @@ public class BasePage {
         selectElement.selectByVisibleText(value);
     }
     protected  List<WebElement> getWebElements(By locator){
-        return driver.findElements(locator);
+        return waitForALLWebElementToBeVisible(driver.findElements(locator));
     }
     protected  WebElement getWebElement(By locator){
-        return driver.findElement(locator);
+        return waitForWebElementToBeVisible(driver.findElement(locator));
     }
 
     protected Set<String> getWindowHandles(){
@@ -190,6 +205,11 @@ public class BasePage {
     protected String getTextForValueAttribute(By locator){
         return waitForWebElementToBeVisible(driver.findElement(locator)).getAttribute("value");
 
+    }
+
+    protected void scrollThroughTheBrowser(By locator){
+        JavascriptExecutor js = (JavascriptExecutor) driver;
+        js.executeScript("arguments[0].scrollIntoView();", getWebElement(locator));
     }
 
     protected void quitBrowser(){

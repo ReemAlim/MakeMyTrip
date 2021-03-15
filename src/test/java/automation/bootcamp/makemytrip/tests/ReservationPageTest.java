@@ -15,7 +15,7 @@ public class ReservationPageTest {
 
     @BeforeTest
     public void launchBrowser() {
-        reservationPage.launchBrowser();
+        reservationPage.launchBrowser("https://www.makemytrip.com/");
     }
 
     @Test(dataProvider = "PassengerInfoDataProvider", dataProviderClass = PassengerInfoDataProvider.class)
@@ -48,6 +48,7 @@ public class ReservationPageTest {
         Assert.assertEquals(passengerInfoClass.getPassengerBookingInfoClass().getNumberOfRooms(), searchListingPage.getRoomCount());
         Assert.assertEquals(passengerInfoClass.getPassengerBookingInfoClass().getAdultsCount(), searchListingPage.getAdultCount());
         Assert.assertEquals(passengerInfoClass.getPassengerBookingInfoClass().getChildrenCount(), searchListingPage.getChildrenCount());
+
     }
 
     @AfterTest
