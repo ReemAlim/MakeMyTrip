@@ -3,14 +3,15 @@ package automation.bootcamp.makemytrip.pages;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.interactions.Action;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import java.util.List;
+
+import java.util.*;
 import java.util.NoSuchElementException;
-import java.util.Set;
 
 public class BasePage {
     protected WebDriver driver;
@@ -19,13 +20,15 @@ public class BasePage {
     public BasePage() {
 
     }
-    public BasePage(WebDriver driver){
+
+    public BasePage(WebDriver driver) {
         this.driver = driver;
     }
 
     public void launchBrowser(String url) {
         getURL(url);
     }
+
     /**
      * Initiate a browser and navigate to the given URL; This should be moved to the loginPage
      */
@@ -34,6 +37,7 @@ public class BasePage {
         this.driver = new ChromeDriver();
         driver.navigate().to(url);
         driver.manage().window().maximize();
+
     }
 
     /**
@@ -63,7 +67,7 @@ public class BasePage {
      */
     protected void fillTextField(By locator, String text) {
         WebElement textField = waitForElementToBeVisible(locator);
-        if (textField.isEnabled()) {
+        if (textField.isDisplayed()) {
             textField.clear();
             textField.sendKeys(text);
             textField.sendKeys(Keys.ENTER);
@@ -100,57 +104,130 @@ public class BasePage {
      * @param webElements, wait for these web elements to be visible
      * @return returns list of web elements to perform an action on
      */
-    private List<WebElement> waitForALLWebElementToBeVisible(List<WebElement> webElements){
+    private List<WebElement> waitForALLWebElementToBeVisible(List<WebElement> webElements) {
         webDriverWait = new WebDriverWait(driver, 20, 500);
-        return webDriverWait.until(ExpectedConditions.visibilityOfAllElements(webElements));
+        try {
+
+            return webDriverWait.until(ExpectedConditions.visibilityOfAllElements(webElements));
+        } catch (StaleElementReferenceException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     /***
      * Get an option of a UL where dropdown is displayed as UL then checks that the text for LI is equal to a text
      * @param ulLocator, This is the UL which represents a dropdown in the DOM
      * @param liLocator, This is a locator for all the LI represented in the UL
-     * @param pLocator, This is a locator for the paragraph where we get the text to compare with the sent one
+    //     * @param pLocator, This is a locator for the paragraph where we get the text to compare with the sent one
      * @param text, The text to compare it with the one we get from the DOM
      */
+//    protected void getLiDropdownOption(By ulLocator, By liLocator,String text) {
+////        System.out.println(text);
+//        WebElement ulElement = waitForElementToBeVisible(ulLocator);
+////        WebElement ulElement = driver.findElement(ulLocator);
+//        List<WebElement> liOptions = ulElement.findElements(liLocator);
+//        System.out.println(liOptions.size());
+//        System.out.println("----");
+//        loopOverLiDropdown(liOptions,text);
+////        if (!liOptions.isEmpty()) {
+////            for (WebElement op : liOptions) {
+////                try {
+////                    System.out.println(op.getText());
+//////                    WebElement webElement = op.findElement(pLocator);
+////                    if (op.getText().equalsIgnoreCase(text)) {
+////                        try {
+////                            System.out.println(op.getText());
+////                            op.click();
+////                            break;
+////                        } catch (StaleElementReferenceException e) {
+////                            e.printStackTrace();
+////                        }
+////
+////                    }
+//////                    break;
+////                } catch (StaleElementReferenceException e) {
+////                    e.printStackTrace();
+////                }
+////            }
+////        }
+//
+//    }
     protected void getLiDropdownOption(By ulLocator, By liLocator, By pLocator, String text) {
-        WebElement ulElement = waitForWebElementToBeVisible(driver.findElement(ulLocator));
+        try{
+            WebElement ulElement = driver.findElement(ulLocator);
+            List<WebElement> liOptions = waitForALLWebElementToBeVisible(ulElement.findElements(pLocator));
+            for (WebElement op : liOptions) {
+                System.out.println(op.getText());
+                try {
+//                    WebElement webElement = op.findElement(pLocator);
+                    if (op.getText().equalsIgnoreCase(text)) {
+                        try {
+                            op.click();
+                            break;
+                        } catch (StaleElementReferenceException e) {
+                            e.printStackTrace();
+                        }
 
-        List<WebElement> liOptions = waitForALLWebElementToBeVisible(ulElement.findElements(liLocator));
-        for (WebElement op : liOptions) {
-            try {
-                WebElement webElement = waitForWebElementToBeVisible(op.findElement(pLocator));
-                if (waitForWebElementToBeVisible(webElement).getText().equalsIgnoreCase(text)) {
-                    try {
-                        waitForWebElementToBeVisible(webElement).click();
-                        break;
-                    } catch (StaleElementReferenceException e) {
-                        e.printStackTrace();
                     }
-
+                } catch (StaleElementReferenceException e) {
+                    e.printStackTrace();
                 }
-            } catch (StaleElementReferenceException e) {
-                e.printStackTrace();
             }
         }
+        catch (Exception e){e.printStackTrace();}
+
     }
+
+    private void loopOverLiDropdown(List<WebElement> liOptions, String text) {
+        if (!liOptions.isEmpty()) {
+            for (WebElement op : liOptions) {
+                try {
+                    System.out.println(op.getText());
+//                    String t = op.findElement(By.className("locusLabel")).getText();
+//                    checkLiTextWithCityName(op.getText());
+//                    WebElement webElement = op.findElement(pLocator);
+                    if (op.getText().contains(text)) {
+                        try {
+                            System.out.println(op.getText());
+                            op.click();
+                            break;
+                        } catch (StaleElementReferenceException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+//
+                } catch (StaleElementReferenceException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+    }
+
+//    protected void checkLiTextWithCityName(String liText,, String text) {
+//
+//    }
 
     protected void getOptionFromDropDown(By optionsLocator, String text) {
 
         List<WebElement> liOptions = waitForALLWebElementToBeVisible(driver.findElements(optionsLocator));
         for (WebElement op : liOptions) {
-            if(op.getText().equalsIgnoreCase(text)){
+            if (op.getText().equalsIgnoreCase(text)) {
                 op.click();
                 break;
             }
         }
     }
 
-    public void moveSliderToEnd(WebElement slider,int xOffset) {
+    public void moveSliderToEnd(WebElement slider, int xOffset) {
         slider.click();
         Actions moveSlider = new Actions(driver);
         Action action = moveSlider.dragAndDropBy(slider, xOffset, 0).build();
         action.perform();
     }
+
     /***
      * Check if a webElement is displayed on the page or not using locator
      * @param locator, This is the locator used to check if the element is displayed or not
@@ -158,31 +235,38 @@ public class BasePage {
      */
     protected boolean checkWebElementIsDisplayed(By locator) {
         webDriverWait = new WebDriverWait(driver, 30, 500);
-        try{
+        try {
             if (webDriverWait.until(ExpectedConditions.visibilityOf(driver.findElement(locator))).isDisplayed()) {
                 return true;
             }
-        }
-        catch (NoSuchElementException e){
+        } catch (NoSuchElementException e) {
             e.printStackTrace();
         }
 
 
         return false;
     }
-    protected void getSelectWebElement(By selectLocator , String value){
+
+    protected void getSelectWebElement(By selectLocator, String value) {
         WebElement selectWebElement = driver.findElement(selectLocator);
         Select selectElement = new Select(selectWebElement);
         selectElement.selectByVisibleText(value);
     }
-    protected  List<WebElement> getWebElements(By locator){
-        return waitForALLWebElementToBeVisible(driver.findElements(locator));
+
+    protected List<WebElement> getWebElements(By locator) {
+        try {
+            return waitForALLWebElementToBeVisible(driver.findElements(locator));
+        } catch (StaleElementReferenceException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
-    protected  WebElement getWebElement(By locator){
+
+    protected WebElement getWebElement(By locator) {
         return waitForWebElementToBeVisible(driver.findElement(locator));
     }
 
-    protected Set<String> getWindowHandles(){
+    protected Set<String> getWindowHandles() {
         return driver.getWindowHandles();
     }
 
@@ -190,29 +274,30 @@ public class BasePage {
      * Method to get the title of the current page
      * @return String of the title for this page
      */
-    protected String getWindowTitle(){
+    protected String getWindowTitle() {
         return driver.getTitle();
     }
 
-    protected String getPageUrl(){
+    protected String getPageUrl() {
         return driver.getCurrentUrl();
     }
+
     /***
      * Method to get the text for an input
      * @param locator, webElement locator to gets its inner text
      * @return
      */
-    protected String getTextForValueAttribute(By locator){
+    protected String getTextForValueAttribute(By locator) {
         return waitForWebElementToBeVisible(driver.findElement(locator)).getAttribute("value");
 
     }
 
-    protected void scrollThroughTheBrowser(By locator){
+    protected void scrollThroughTheBrowser(WebElement webElement) {
         JavascriptExecutor js = (JavascriptExecutor) driver;
-        js.executeScript("arguments[0].scrollIntoView();", getWebElement(locator));
+        js.executeScript("arguments[0].scrollIntoView();", webElement);
     }
 
-    protected void quitBrowser(){
+    protected void quitBrowser() {
         driver.quit();
     }
 }

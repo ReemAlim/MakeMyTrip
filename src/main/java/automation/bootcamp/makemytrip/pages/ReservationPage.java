@@ -22,6 +22,15 @@ public class ReservationPage extends BasePage {
     By country_span_arrow_xpath = By.xpath("//span[contains(@class,'whiteDownArrow')]");
     By country_list_sapan_xpath = By.xpath("//span[@class='countryName']");
 
+//    By city_input_id = By.id("city");
+//    //    By city_input_id = By.xpath("//label[@for='city']");
+//    By city_input_xpath = By.xpath("//input[@aria-autocomplete='list']");
+//    By city_ul_xpath = By.xpath("//div[contains(@class,'react-autosuggest__section-container')]//ul[@role='listbox' and @class='react-autosuggest__suggestions-list']");
+//    //    By city_ul_xpath = By.xpath("//div[@id='react-autowhatever-1']");
+//    By city_li_options_xpath = By.className("react-autosuggest__suggestion");
+//    //    By city_li_options_xpath = By.xpath("//ul[@role='listbox']//li[contains(@id,'react-autowhatever') and @role='option']//p[contains(@class,'locusLabel')]");
+//    By city_p_xpath = By.xpath("//ul[@role='listbox']//li[contains(@id,'react-autowhatever') and @role='option']");
+
     By city_input_id = By.id("city");
     By city_input_xpath = By.xpath("//input[@aria-autocomplete='list']");
     By city_ul_xpath = By.xpath("//ul[@role='listbox']");
@@ -61,22 +70,29 @@ public class ReservationPage extends BasePage {
     public void getHotelCard() {
         clickOnButton(hotel_a_xpath);
     }
-    public void chooseIndianFromCountryList(){
+
+    public void chooseIndianFromCountryList() {
         clickOnButton(login_li_xpath);
 //        WebElement countyElement = getWebElement(country_div_xpath);
 //        countyElement.click();
         clickOnButton(country_span_arrow_xpath);
-        getOptionFromDropDown(country_list_sapan_xpath,"India");
+        getOptionFromDropDown(country_list_sapan_xpath, "India");
 
     }
+
     /*********************** All of the above should be moved somewhere!! **************************/
+
+    public void clickCityName() {
+        clickOnButton(city_input_id);
+    }
+
     /***
      * Method to fill the city name field with the name got from the PassengerInfo JSON file
      * @param cityName, The city name text which will be typed in the field
      */
     public void fillCityName(String cityName) {
-        clickOnButton(city_input_id);
         fillTextField(city_input_xpath, cityName);
+//        clickCityOption(cityName);
     }
 
     /***
@@ -85,7 +101,7 @@ public class ReservationPage extends BasePage {
      * @param text, The city name which we got from the PassengerInfo JSON file
      */
     public void clickCityOption(String text) {
-        getLiDropdownOption(city_ul_xpath, city_li_options_xpath, city_p_xpath, text);
+        getLiDropdownOption(city_ul_xpath,city_li_options_xpath, city_p_xpath, text);
     }
 
     /***
@@ -198,24 +214,24 @@ public class ReservationPage extends BasePage {
      * Method to select the check in date
      * @param date The date returned from the PassengerInfo JSON file
      */
-    public void selectCheckInDate(String date){
-        calendarClass  = new CalendarClass(this.driver,currentSelectedDay,datePickerCaptionList_div_xpath,monthYearButtonNext_span_xpath);
-        calendarClass.selectDateFromCalendar(date,0);
+    public void selectCheckInDate(String date) {
+        calendarClass = new CalendarClass(this.driver, currentSelectedDay, datePickerCaptionList_div_xpath, monthYearButtonNext_span_xpath);
+        calendarClass.selectDateFromCalendar(date, 0);
     }
 
     /***
      * Method to select the check out date
      * @param date The date returned from the PassengerInfo JSON file
      */
-    public void selectCheckOutDate(String date){
-        calendarClass.selectDateFromCalendar(date,1);
+    public void selectCheckOutDate(String date) {
+        calendarClass.selectDateFromCalendar(date, 1);
 
     }
 
     /***
      * Method to click on the Search button after entering all the data to get the search result page
      */
-    public void clickSearch(){
+    public void clickSearch() {
         clickOnButton(search_button_id);
     }
 
@@ -223,22 +239,22 @@ public class ReservationPage extends BasePage {
      * Method to get the title od the "Search Result" page loaded after clicking "Search"
      * @return it returns the title for the page
      */
-    public String getNextPageTitle(){
+    public String getNextPageTitle() {
         return getWindowTitle();
     }
 
-    public SearchListingPage getSearchListingPageObject(){
+    public SearchListingPage getSearchListingPageObject() {
 //        JsonObject jsonObject = new JsonObject();
 //        JsonElement jsonElement;
 //        jsonObject.toString();
 
         searchListingPage = new SearchListingPage(this.driver);
-        JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty("searchListPageURL",getPageUrl());
-        System.out.println(getPageUrl());
-        System.out.println(jsonObject);
-//        System.out.println("=====");
-        JsonWriter.writeInJsonFile(jsonObject);
+//        JsonObject jsonObject = new JsonObject();
+//        jsonObject.addProperty("searchListPageURL",getPageUrl());
+//        System.out.println(getPageUrl());
+//        System.out.println(jsonObject);
+////        System.out.println("=====");
+//        JsonWriter.writeInJsonFile(jsonObject);
         return searchListingPage;
     }
 
