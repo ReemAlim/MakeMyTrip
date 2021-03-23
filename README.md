@@ -15,9 +15,11 @@ I have faced some issues while building up the framework:
    
  - Waiting for the hotels list container to load sometimes fails didnt get why so the whole test fails.
  
- - Culdnt get the logic for adding the rooms so I couldnt proceed with the flow
+ - Couldnt get the logic for adding the rooms so I couldnt proceed with the flow
  
  - ReservationPageTest is where you will find all the listed tests
+ 
+ - Didnt add loggers nor reporting!
  
  NB:
 Couldnt upload the screenshots
