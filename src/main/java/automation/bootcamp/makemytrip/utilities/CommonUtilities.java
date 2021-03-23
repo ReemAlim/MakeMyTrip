@@ -15,18 +15,28 @@ public class CommonUtilities {
         return dateFormat;
     }
 
+    /***
+     * Method to capitalize first letter for a string
+     * @param stringToCapitalize
+     * @return
+     */
     public static String capitalizeFirstLetter(String stringToCapitalize) {
         String output = stringToCapitalize.substring(0, 1).toUpperCase() + stringToCapitalize.substring(1);
         return output;
     }
 
+    /***
+     * Method to split a string based on sent characters
+     * @param stringToSplit
+     * @param charToSplitAt
+     * @return
+     */
     public static String[] splitString(String stringToSplit, String charToSplitAt) {
         String[] stringParts = stringToSplit.split(charToSplitAt);
         if (stringParts != null) {
             return stringParts;
         }
         return null;
-
     }
 
     private static String getEquivalentMonthNumber(String month) {
@@ -60,10 +70,15 @@ public class CommonUtilities {
         }
     }
 
+    /***
+     * Method to get the value for a month into a number but returned as string as I dont know why switch case at this time
+     * didnt accept numbers then I think I updated something on the pom to accept this but didnt update this for now
+     * @param date the date returned from the UI
+     * @return
+     */
     public static String getDateInNumbers(String date) {
         String monthInDateString = splitString(date, "/")[1];
         String monthNumber = getEquivalentMonthNumber(monthInDateString);
-
         return date.replace(monthInDateString, monthNumber);
     }
 

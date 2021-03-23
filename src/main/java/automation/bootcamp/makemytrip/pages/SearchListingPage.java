@@ -4,10 +4,6 @@ import automation.bootcamp.makemytrip.utilities.CommonUtilities;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
-
-import javax.print.DocFlavor;
 import java.util.List;
 
 public class SearchListingPage extends BasePage {
@@ -23,8 +19,12 @@ public class SearchListingPage extends BasePage {
      */
     By pricePerNight_div_slider_xpath = By.xpath("//div[@class='input-range__slider']");
     By userRating_span_xpath = By.xpath("//div[@id='hlistpg_fr_user_rating']//ul[@class='filterList']//span[@class='checkmarkOuter']");
-    By scrollToElement_div_id = By.id("hlistpg_fr_star_category");
-    By scrollBackUp_div_id = By.id("hlistpg_fr_popular_filters");
+    By propertyType_span_xpath = By.xpath("//div[@id='hlistpg_fr_property_types']//ul[@class='filterList']//span[@class='checkmarkOuter']");
+    By scrollToElement_div_id = By.id("hlistpg_fr_user_rating");
+    By scrollToElement_flaky_div_id = By.id("USER_RATING");
+//    By scrollBackUp_div_id = By.id("hlistpg_fr_popular_filters");
+    By scrollBackUp_div_id = By.xpath("//div[contains(@class,'filterWrap')]");
+    By scrollToPropertyType_div_id = By.id("hlistpg_fr_property_types");
 
     By appliedFilter_div_class = By.className("appliedFiltersContainer");
     By appliedFilter_options_xpath = By.xpath("//ul[@class='appliedFilters']//span[@class='latoBold']");
@@ -32,11 +32,16 @@ public class SearchListingPage extends BasePage {
     /***
      * Locators for Hotel Listing wrapper
      */
-    By hotelListingContainer_div_xpath = By.xpath("//div[@id='hotelListingContainer']//div[contains(@class,'listingRow')]");
+    By hotelListingContainer_div_className = By.className("listingWrap");
+//    By hotelListingContainer_div_className = By.className("infinite-scroll-component ");
+    //    By hotelListingContainer_div_xpath = By.xpath("//div[@id='hotelListingContainer']//div[contains(@class,'listingRow')]");
+    By hotelListingContainer_div_xpath = By.xpath("//div[@class='listingRowOuter']");
+//    By hotelListingContainer_div_xpath = By.id("hotelListingContainer");
+    By hotelName_xpath = By.id("hlistpg_hotel_name");
 
+    HotelDetailsPage hotelDetailsPage;
+    static String mainWindowId;
 
-    public SearchListingPage() {
-    }
 
     public SearchListingPage(WebDriver driver) {
         super(driver);
@@ -44,7 +49,6 @@ public class SearchListingPage extends BasePage {
 
     public String getCityValue() {
         String cityValue = getTextForValueAttribute(city_input_id);
-        System.out.println(cityValue);
         if (cityValue.contains("...")) {
             return cityValue.substring(0, cityValue.length() - 3);
         }
@@ -57,7 +61,9 @@ public class SearchListingPage extends BasePage {
     }
 
     public String getCheckInDateAsString(String dateInput) {
+        System.out.println("Date: " + dateInput);
         String date = CommonUtilities.splitString(dateInput, ", ")[1].replaceAll(" ", "/");
+        System.out.println("Date Extracted: " + date);
         return CommonUtilities.getDateInNumbers(date);
     }
 
@@ -87,17 +93,25 @@ public class SearchListingPage extends BasePage {
 
 
     public void clickOnCheckboxUserRating(String userRatingText) {
-        WebDriverWait wait = new WebDriverWait(driver, 70);
-        List<WebElement> userRatingSpanElements = getWebElements(userRating_span_xpath);
-        scrollThroughTheBrowser(wait.until(ExpectedConditions.visibilityOfElementLocated(scrollToElement_div_id)));
-        if (!userRatingSpanElements.isEmpty()) {
-            for (WebElement ratingElement : userRatingSpanElements) {
-                if (ratingElement.getText().contains(userRatingText)) {
-                    wait.until(ExpectedConditions.visibilityOf(ratingElement)).click();
+        waitForPageLoad();
+        WebElement pageElement = waitUntilElementIsVisibleInPage(By.xpath("//div[@class='listingWrap']"));
+        if (pageElement.isDisplayed()) {
 
+            WebElement ratingContainer = scrollThroughTheBrowser(scrollToElement_div_id);
+            if (ratingContainer != null) {
+                List<WebElement> userRatingSpanElements = getWebElementsFromParent(ratingContainer, userRating_span_xpath);
+                if (!userRatingSpanElements.isEmpty()) {
+                    for (WebElement ratingElement : userRatingSpanElements) {
+
+                        if (ratingElement.getText().equalsIgnoreCase(userRatingText)) {
+                            ratingElement.click();
+                        }
+                    }
                 }
             }
         }
+
+
     }
 
     private List<WebElement> getRangeSliders() {
@@ -105,14 +119,13 @@ public class SearchListingPage extends BasePage {
     }
 
     public void moverPriceRate(int xOffsetForPrice) {
-//        WebDriverWait wait = new WebDriverWait(driver, 70);
-        scrollThroughTheBrowser(getWebElement(scrollBackUp_div_id));
-        System.out.println("I am there");
+        scrollThroughTheBrowser(scrollBackUp_div_id);
         List<WebElement> webElements = getRangeSliders();
-        System.out.println(webElements.get(0).getLocation());
-        if(!webElements.isEmpty()){
-            System.out.println("ysss");
-            moveSliderToEnd(getRangeSliders().get(0), xOffsetForPrice);
+
+        System.out.println("Location: " + webElements.get(0).getLocation());
+        if (!webElements.isEmpty()) {
+            System.out.println("Location 1: " + webElements.get(0).getLocation());
+            moveSliderToEnd(webElements.get(0), xOffsetForPrice);
         }
 
     }
@@ -157,14 +170,59 @@ public class SearchListingPage extends BasePage {
     }
 
     public void getTheRequiredHotelContainer() {
-        List<WebElement> hotelContainersList = getWebElements(hotelListingContainer_div_xpath);
-        System.out.println(hotelContainersList.size());
-        if (!hotelContainersList.isEmpty()) {
-            for (WebElement hotelContainer : hotelContainersList) {
-                WebElement hotelName = hotelContainer.findElement(By.id("hlistpg_hotel_name"));
-                System.out.println(hotelName.getText());
+        waitForPageLoad();
+        WebElement hotelsContainer = waitUntilElementIsVisibleInPage(hotelListingContainer_div_className);
 
+        if (hotelsContainer.isDisplayed()) {
+            List<WebElement> hotelContainersList = getWebElements(hotelListingContainer_div_xpath);
+            if (!hotelContainersList.isEmpty()) {
+                WebElement hotelElementRequired = getTheRequiredHotelName(hotelContainersList);
+                hotelElementRequired.click();
+            } else {
+                throw new NullPointerException("The hotel List is empty!");
             }
+
+        }
+
+    }
+
+    private WebElement getTheRequiredHotelName(List<WebElement> hotelElementsList) {
+        if (hotelElementsList.size() <= 5) {
+            return hotelElementsList.get(hotelElementsList.size() - 1);
+//            return hotelElementsList.get(hotelElementsList.size() - 2);
+        } else {
+            WebElement hotelElementRequired = hotelElementsList.get(4).findElement(hotelName_xpath);
+//            WebElement hotelElementRequired = hotelElementsList.get(3).findElement(By.id("hlistpg_hotel_name"));
+            return hotelElementRequired;
         }
     }
+
+    public String getCurrentWindow() {
+        System.out.println(getCurrentWindowId(this.driver));
+        return getCurrentWindowId(this.driver);
+    }
+
+    public WebDriver getHotelDetailsDriver() {
+        mainWindowId = getCurrentWindow();
+        WebDriver currentDriver = switchToRequiredTab(mainWindowId);
+        return currentDriver;
+    }
+
+    public String getHotelDetailsTabActive() {
+
+        mainWindowId = getCurrentWindow();
+        WebDriver currentDriver = getHotelDetailsDriver();
+        return currentDriver.getCurrentUrl();
+    }
+
+    public String getHotelUrl(){
+        return getHotelDetailsTabActive();
+    }
+
+
+    public HotelDetailsPage getHotelDetailsPageObject() {
+        hotelDetailsPage = new HotelDetailsPage(this.driver);
+        return hotelDetailsPage;
+    }
+
 }

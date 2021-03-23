@@ -4,6 +4,8 @@ import automation.bootcamp.makemytrip.boClasses.PassengerInfoClass;
 import automation.bootcamp.makemytrip.boClasses.SearchFilterClass;
 import automation.bootcamp.makemytrip.dataProviders.PassengerInfoDataProvider;
 import automation.bootcamp.makemytrip.dataProviders.SearchFilterDataProvider;
+import automation.bootcamp.makemytrip.dataReaders.PropertyReader;
+import automation.bootcamp.makemytrip.pages.HotelDetailsPage;
 import automation.bootcamp.makemytrip.pages.ReservationPage;
 import automation.bootcamp.makemytrip.pages.SearchListingPage;
 import org.testng.Assert;
@@ -12,21 +14,21 @@ import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 public class ReservationPageTest {
+
     ReservationPage reservationPage = new ReservationPage();
+    private String url = PropertyReader.getConfigProperty("baseUrl");
     static SearchListingPage searchListingPage;
+    static HotelDetailsPage hotelDetailsPage;
 
     @BeforeTest
     public void launchBrowser() {
-        reservationPage.launchBrowser("https://www.makemytrip.com/");
+        reservationPage.openPage(url);
     }
 
     @Test(dataProvider = "PassengerInfoDataProvider", dataProviderClass = PassengerInfoDataProvider.class)
     public void A_AssertOnTheSearchAListingPageAfterFillingReservationInfo(PassengerInfoClass passengerInfoClass) {
-        reservationPage.chooseIndianFromCountryList();
-        reservationPage.getHotelCard();
-        reservationPage.clickCityName();
-        reservationPage.fillCityName(passengerInfoClass.getPassengerBookingInfoClass().getCityName());
-        reservationPage.clickCityOption(passengerInfoClass.getPassengerBookingInfoClass().getCityName());
+        reservationPage.loadPageIgnoringLogin();
+        reservationPage.fillInCityName(passengerInfoClass.getPassengerBookingInfoClass().getCityName());
         reservationPage.selectCheckInDate(passengerInfoClass.getPassengerBookingInfoClass().getCheckIn());
         reservationPage.selectCheckOutDate(passengerInfoClass.getPassengerBookingInfoClass().getCheckOut());
         reservationPage.clickGuestRoomChildren();
@@ -37,12 +39,14 @@ public class ReservationPageTest {
         reservationPage.clickTravelOption();
         reservationPage.clickTravelFor(passengerInfoClass.getPassengerBookingInfoClass().getTravellingPurpose());
         reservationPage.clickSearch();
-        Assert.assertTrue(reservationPage.getNextPageTitle().contentEquals("MakeMyTrip"));
+        Assert.assertTrue(reservationPage.getNextPageUrl().contains("hotels/hotel-listing/"));
     }
+
     @BeforeTest
-    public void getSearchListingPage(){
+    public void getSearchListingPage() {
         searchListingPage = reservationPage.getSearchListingPageObject();
     }
+
     @Test(dataProvider = "PassengerInfoDataProvider", dataProviderClass = PassengerInfoDataProvider.class)
     public void B_AssertOnTheSearchCriteriaOnSearchListingPage(PassengerInfoClass passengerInfoClass) {
         searchListingPage = reservationPage.getSearchListingPageObject();
@@ -55,23 +59,32 @@ public class ReservationPageTest {
 
     }
 
-    @Test(dataProvider = "SearchFilterDataProvider",dataProviderClass = SearchFilterDataProvider.class)
-    public void C_AssertOnTheSearchFilters(SearchFilterClass searchFilterClass){
+    @Test(dataProvider = "SearchFilterDataProvider", dataProviderClass = SearchFilterDataProvider.class)
+    public void C_AssertOnTheSearchFilters(SearchFilterClass searchFilterClass) {
+//        searchListingPage.moverPriceRate(searchFilterClass.getxOffset());
         searchListingPage.clickOnCheckboxUserRating(searchFilterClass.getUserRating());
-        searchListingPage.moverPriceRate(searchFilterClass.getxOffset());
+//
         Assert.assertTrue(searchListingPage.getAppliedFilter());
-        Assert.assertEquals(searchListingPage.getPriceRangeText(searchFilterClass.getPriceRange()),"5500");
-        Assert.assertEquals(searchListingPage.getUserRatingText(searchFilterClass.getUserRating()),("4 & above (Very Good)"));
-
+//        Assert.assertEquals(searchListingPage.getPriceRangeText(searchFilterClass.getPriceRange()),"3000");
+        Assert.assertEquals(searchListingPage.getUserRatingText(searchFilterClass.getUserRating()), ("4 & above (Very Good)"));
     }
 
-//    @Test
-//    public void assertOnTheSearchHotelName(){
-//        searchListingPage.getTheRequiredHotelContainer();
-//    }
-//
+    @Test
+    public void D_assertOnTheSearchHotelName() {
+        searchListingPage.getTheRequiredHotelContainer();
+        Assert.assertTrue(searchListingPage.getHotelUrl().contains("/hotels/hotel-details/"));
+    }
+
+    @Test(dataProvider = "PassengerInfoDataProvider", dataProviderClass = PassengerInfoDataProvider.class)
+    public void E_assertOnHotelDetails(PassengerInfoClass passengerInfoClass) {
+        hotelDetailsPage = searchListingPage.getHotelDetailsPageObject();
+        hotelDetailsPage.getFirstRecommendedBlock();
+        hotelDetailsPage.getAllInfoForARoomOption();
+        hotelDetailsPage.comboOfMethodsCalling(passengerInfoClass);
+    }
+
     @AfterTest
     public void quitBrowser() {
-        reservationPage.quit();
+        reservationPage.closeBrowser();
     }
 }

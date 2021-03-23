@@ -5,9 +5,9 @@
     "phoneNumber": "0122345678",
     "age": 36,
     "passengerBookingInfo": {
-      "cityName": "Singapore",
-      "checkInDate": "30/03/2021",
-      "checkOutDate": "01/04/2021",
+      "cityName": "Dubai, United Arab Emirates",
+      "checkInDate": "31/03/2021",
+      "checkOutDate": "09/04/2021",
       "numberOfAdults": 4,
       "numberOfChildren": 3,
       "numberOfRooms": 1,

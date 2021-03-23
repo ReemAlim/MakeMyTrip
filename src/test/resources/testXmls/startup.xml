@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="StartUp">
+    <test name="ReservationPageTest" thread-count="1">
+        <classes>
+            <class name="automation.bootcamp.makemytrip.tests.ReservationPageTest">
+                <methods>
+                    <include name="A_AssertOnTheSearchAListingPageAfterFillingReservationInfo"></include>
+                    <include name="B_AssertOnTheSearchCriteriaOnSearchListingPage"></include>
+                    <include name="C_AssertOnTheSearchFilters"></include>
+                    <include name="D_assertOnTheSearchHotelName"></include>
+                    <include name="E_assertOnHotelDetails"></include>
+                </methods>
+            </class>
+        </classes>
+    </test>
+</suite>

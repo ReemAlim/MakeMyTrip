@@ -1,13 +1,10 @@
 package automation.bootcamp.makemytrip.pages;
 
-import automation.bootcamp.makemytrip.file.dataWriters.JsonWriter;
 import automation.bootcamp.makemytrip.utilities.CommonUtilities;
 import automation.bootcamp.makemytrip.utilities.helperClasses.CalendarClass;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.json.Json;
 
 import java.util.ArrayList;
 
@@ -18,24 +15,12 @@ public class ReservationPage extends BasePage {
      * Locators for the city field to select the city from the dropdown
      */
     By hotel_a_xpath = By.xpath("//a[contains(@class,'hrtlCenter')][contains(@href,'hotels')]");
-    By login_li_xpath = By.xpath("//li[contains(@class,'lhUser')]");
-    By country_span_arrow_xpath = By.xpath("//span[contains(@class,'whiteDownArrow')]");
-    By country_list_sapan_xpath = By.xpath("//span[@class='countryName']");
-
-//    By city_input_id = By.id("city");
-//    //    By city_input_id = By.xpath("//label[@for='city']");
-//    By city_input_xpath = By.xpath("//input[@aria-autocomplete='list']");
-//    By city_ul_xpath = By.xpath("//div[contains(@class,'react-autosuggest__section-container')]//ul[@role='listbox' and @class='react-autosuggest__suggestions-list']");
-//    //    By city_ul_xpath = By.xpath("//div[@id='react-autowhatever-1']");
-//    By city_li_options_xpath = By.className("react-autosuggest__suggestion");
-//    //    By city_li_options_xpath = By.xpath("//ul[@role='listbox']//li[contains(@id,'react-autowhatever') and @role='option']//p[contains(@class,'locusLabel')]");
-//    By city_p_xpath = By.xpath("//ul[@role='listbox']//li[contains(@id,'react-autowhatever') and @role='option']");
 
     By city_input_id = By.id("city");
     By city_input_xpath = By.xpath("//input[@aria-autocomplete='list']");
     By city_ul_xpath = By.xpath("//ul[@role='listbox']");
     By city_li_options_xpath = By.xpath("//ul[@role='listbox']//li");
-    By city_p_xpath = By.xpath("//p[contains(@class,'locusLabel')]");
+    By city_p_xpath = By.tagName("p");
 
     /***
      * Locators to fill the Guests field
@@ -67,22 +52,22 @@ public class ReservationPage extends BasePage {
         super();
     }
 
-    public void getHotelCard() {
+    public void loadPageIgnoringLogin() {
+        WebElement webElement = getWebElement(By.id("root"));
+        webElement.click();
+        getHotelCard();
+    }
+
+    private void getHotelCard() {
         clickOnButton(hotel_a_xpath);
     }
 
-    public void chooseIndianFromCountryList() {
-        clickOnButton(login_li_xpath);
-//        WebElement countyElement = getWebElement(country_div_xpath);
-//        countyElement.click();
-        clickOnButton(country_span_arrow_xpath);
-        getOptionFromDropDown(country_list_sapan_xpath, "India");
-
+    public void fillInCityName(String cityName) {
+        clickCityName();
+        fillCityName(cityName);
     }
 
-    /*********************** All of the above should be moved somewhere!! **************************/
-
-    public void clickCityName() {
+    private void clickCityName() {
         clickOnButton(city_input_id);
     }
 
@@ -90,8 +75,16 @@ public class ReservationPage extends BasePage {
      * Method to fill the city name field with the name got from the PassengerInfo JSON file
      * @param cityName, The city name text which will be typed in the field
      */
-    public void fillCityName(String cityName) {
+    private void fillCityName(String cityName) {
         fillTextField(city_input_xpath, cityName);
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        if (getWebElement(city_input_xpath).getAttribute("value").equalsIgnoreCase(cityName)) {
+            clickCityOption(cityName);
+        }
 //        clickCityOption(cityName);
     }
 
@@ -100,8 +93,8 @@ public class ReservationPage extends BasePage {
      * be equal to the city name entered by the user (which we got from the PassengerInfo JSON file)
      * @param text, The city name which we got from the PassengerInfo JSON file
      */
-    public void clickCityOption(String text) {
-        getLiDropdownOption(city_ul_xpath,city_li_options_xpath, city_p_xpath, text);
+    private void clickCityOption(String text) {
+        getLiDropdownOption(city_ul_xpath, city_li_options_xpath, city_p_xpath, text);
     }
 
     /***
@@ -235,31 +228,14 @@ public class ReservationPage extends BasePage {
         clickOnButton(search_button_id);
     }
 
-    /***
-     * Method to get the title od the "Search Result" page loaded after clicking "Search"
-     * @return it returns the title for the page
-     */
-    public String getNextPageTitle() {
-        return getWindowTitle();
+    public String getNextPageUrl() {
+        return getPageUrl();
     }
 
     public SearchListingPage getSearchListingPageObject() {
-//        JsonObject jsonObject = new JsonObject();
-//        JsonElement jsonElement;
-//        jsonObject.toString();
-
         searchListingPage = new SearchListingPage(this.driver);
-//        JsonObject jsonObject = new JsonObject();
-//        jsonObject.addProperty("searchListPageURL",getPageUrl());
-//        System.out.println(getPageUrl());
-//        System.out.println(jsonObject);
-////        System.out.println("=====");
-//        JsonWriter.writeInJsonFile(jsonObject);
+        waitForPageLoad();
         return searchListingPage;
     }
 
-
-    public void quit() {
-        quitBrowser();
-    }
 }
