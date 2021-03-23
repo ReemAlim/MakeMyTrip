@@ -19,4 +19,6 @@ I have faced some issues while building up the framework:
  
  - ReservationPageTest is where you will find all the listed tests
  
+ NB:
+Couldnt upload the screenshots
  
